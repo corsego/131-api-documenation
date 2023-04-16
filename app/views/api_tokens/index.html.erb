@@ -1,0 +1,7 @@
+<%= button_to 'Create API token', api_tokens_path %>
+
+<div id="api_tokens">
+  <% @api_tokens.each do |api_token| %>
+    <%= render partial: 'api_tokens/api_token', locals: { api_token: api_token } %>
+  <% end %>
+</div>

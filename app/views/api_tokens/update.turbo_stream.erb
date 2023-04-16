@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@api_token) do %>
+  <%= render partial: 'api_tokens/api_token', locals: { api_token: @api_token } %>
+<% end %>

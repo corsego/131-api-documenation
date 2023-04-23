@@ -72,3 +72,5 @@ group :test do
 end
 
 gem 'devise'
+gem 'rswag-api'
+gem 'rswag-ui'

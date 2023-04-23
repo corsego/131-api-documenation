@@ -1,0 +1,185 @@
+openapi: 3.0.3
+info:
+  title: My API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+  - url: https://superails.com
+paths:
+  /api/v1/posts:
+    get:
+      summary: Get a list of posts for the authenticated user
+      operationId: getPosts
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A list of posts for the authenticated user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create a new post for the authenticated user
+      operationId: createPost
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: The post to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+      responses:
+        '201':
+          description: The created post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/posts/{postId}:
+    parameters:
+      - in: path
+        name: postId
+        required: true
+        description: The ID of the post to retrieve, update or delete
+        schema:
+          type: integer
+    get:
+      summary: Get a post by ID
+      operationId: getPostById
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: The post with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: Update a post by ID
+      operationId: updatePostById
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: The updated post data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+      responses:
+        '200':
+          description: The updated post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a post by ID
+      operationId: deletePostById
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: The post was successfully deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for the post
+        title:
+          type: string
+          description: The title of the post
+        body:
+          type: string
+          description: The description of the post
+        user_id:
+          type: integer
+          description: The ID of the user who created the post
+      required:
+        - id
+        - title
+        - user_id
+    PostCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the post
+        body:
+          type: string
+          description: The description of the post
+      required:
+        - title
+      additionalProperties: false
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    BadRequest:
+      description: Invalid request body or parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: A description of the error
+            required:
+              - message
+    Unauthorized:
+      description: Authentication credentials were missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: A description of the error
+            required:
+              - message
+    NotFound:
+      description: Record not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: A description of the error
+            required:
+              - message
+    

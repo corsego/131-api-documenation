@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  # authenticate :user do
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
+  # end
   resources :posts
   devise_for :users
   root 'static_pages#landing_page'
